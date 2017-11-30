@@ -15,6 +15,10 @@ library(ggplot2)
 library(zoo)
 library(magrittr)
 
+# ethereumPlots = c("Token Price", "Hashrate", "Difficulty", "Transation_Count", "Address_Count", "Gas_Price", "Gas_Price_Limit", "ETH", "Trans_Cost" )
+
+ethereumPlots <- c("Token Price", "Hash Rate", "Difficulty", "Transaction Count")
+
 # Define UI for application that draws a histogram
 ui <- fluidPage(
    
@@ -24,287 +28,226 @@ ui <- fluidPage(
    # Sidebar with a slider input for number of bins 
    sidebarLayout(
       sidebarPanel(
+        selectInput("currency",
+                    "Currency",
+                    choices = c("ETH", "BTC"),
+                    selected = "ETH"),
          selectInput("yearChoice",
                      "Year",
                      choices = c(2015, 2016, 2017),
-                     selected = 2017)
+                     selected = 2017),
+         selectInput("fiscalQuarterChoice",
+                     "Fiscal Quarter",
+                     choices = c("1", "2", "3", "4", "All"),
+                     selected = "All"),
+         selectInput("metric",
+                     "Currency Metric",
+                     choices = ethereumPlots,
+                     selected = "Token Price")
+         
       ),
-      
       # Show a plot of the generated distribution
       mainPanel(
-         plotOutput("tokenPrice")
+         plotOutput("selectedPlot")
       )
-   ),
-   sidebarLayout(
-     sidebarPanel(
-       selectInput("yearChoice",
-                   "Year",
-                   choices = c(2015, 2016, 2017),
-                   selected = 2017)
-     ),
-     
-     # Show a plot of the generated distribution
-     mainPanel(
-       plotOutput("Hashrate")
-     )
-   ), 
-   sidebarLayout(
-     sidebarPanel(
-       selectInput("yearChoice",
-                   "Year",
-                   choices = c(2015, 2016, 2017),
-                   selected = 2017)
-     ),
-     
-     # Show a plot of the generated distribution
-     mainPanel(
-       plotOutput("Difficulty")
-     )
-   ), 
-   sidebarLayout(
-     sidebarPanel(
-       selectInput("yearChoice",
-                   "Year",
-                   choices = c(2015, 2016, 2017),
-                   selected = 2017)
-     ),
-     
-     # Show a plot of the generated distribution
-     mainPanel(
-       plotOutput("Transation_Count")
-     )
-   ), 
-   sidebarLayout(
-     sidebarPanel(
-       selectInput("yearChoice",
-                   "Year",
-                   choices = c(2015, 2016, 2017),
-                   selected = 2017)
-     ),
-     
-     # Show a plot of the generated distribution
-     mainPanel(
-       plotOutput("Address_Count")
-     )
-   ), 
-   sidebarLayout(
-     sidebarPanel(
-       selectInput("yearChoice",
-                   "Year",
-                   choices = c(2015, 2016, 2017),
-                   selected = 2017)
-     ),
-     
-     # Show a plot of the generated distribution
-     mainPanel(
-       plotOutput("Gas_Price")
-     )
-   ), 
-   sidebarLayout(
-     sidebarPanel(
-       selectInput("yearChoice",
-                   "Year",
-                   choices = c(2015, 2016, 2017),
-                   selected = 2017)
-     ),
-     
-     # Show a plot of the generated distribution
-     mainPanel(
-       plotOutput("Gas_Price_2017")
-     )
-   ), 
-   sidebarLayout(
-     sidebarPanel(
-       selectInput("yearChoice",
-                   "Year",
-                   choices = c(2015, 2016, 2017),
-                   selected = 2017)
-     ),
-     
-     # Show a plot of the generated distribution
-     mainPanel(
-       plotOutput("Gas_Price_Limit")
-     )
-   ), 
-   sidebarLayout(
-     sidebarPanel(
-       selectInput("yearChoice",
-                   "Year",
-                   choices = c(2015, 2016, 2017),
-                   selected = 2017)
-     ),
-     
-     # Show a plot of the generated distribution
-     mainPanel(
-       plotOutput("Gas_Price_Limit_2017")
-     )
-   ), 
-   sidebarLayout(
-     sidebarPanel(
-       selectInput("yearChoice",
-                   "Year",
-                   choices = c(2015, 2016, 2017),
-                   selected = 2017)
-     ),
-     
-     # Show a plot of the generated distribution
-     mainPanel(
-       plotOutput("ETH")
-     )
-   ), 
-   sidebarLayout(
-     sidebarPanel(
-       selectInput("yearChoice",
-                   "Year",
-                   choices = c(2015, 2016, 2017),
-                   selected = 2017)
-     ),
-     
-     # Show a plot of the generated distribution
-     mainPanel(
-       plotOutput("ETH_2017")
-     )
-   ), 
-   sidebarLayout(
-     sidebarPanel(
-       selectInput("yearChoice",
-                   "Year",
-                   choices = c(2015, 2016, 2017),
-                   selected = 2017)
-     ),
-     
-     # Show a plot of the generated distribution
-     mainPanel(
-       plotOutput("Trans_Cost")
-     )
-   ), 
-   sidebarLayout(
-     sidebarPanel(
-       selectInput("yearChoice",
-                   "Year",
-                   choices = c(2015, 2016, 2017),
-                   selected = 2017)
-     ),
-     
-     # Show a plot of the generated distribution
-     mainPanel(
-       plotOutput("Trans_Cost_2017")
-     )
    )
+   # ,
+   # sidebarLayout(
+   #   sidebarPanel(
+   #     selectInput("yearChoice",
+   #                 "Year",
+   #                 choices = c(2015, 2016, 2017),
+   #                 selected = 2017)
+   #   ),
+   #   
+   #   # Show a plot of the generated distribution
+   #   mainPanel(
+   #     plotOutput("Hashrate")
+   #   )
+   # ), 
+   # sidebarLayout(
+   #   sidebarPanel(
+   #     selectInput("yearChoice",
+   #                 "Year",
+   #                 choices = c(2015, 2016, 2017),
+   #                 selected = 2017)
+   #   ),
+   #   
+   #   # Show a plot of the generated distribution
+   #   mainPanel(
+   #     plotOutput("Difficulty")
+   #   )
+   # ), 
+   # sidebarLayout(
+   #   sidebarPanel(
+   #     selectInput("yearChoice",
+   #                 "Year",
+   #                 choices = c(2015, 2016, 2017),
+   #                 selected = 2017)
+   #   ),
+   #   
+   #   # Show a plot of the generated distribution
+   #   mainPanel(
+   #     plotOutput("Transation_Count")
+   #   )
+   # ), 
+   # sidebarLayout(
+   #   sidebarPanel(
+   #     selectInput("yearChoice",
+   #                 "Year",
+   #                 choices = c(2015, 2016, 2017),
+   #                 selected = 2017)
+   #   ),
+   #   
+   #   # Show a plot of the generated distribution
+   #   mainPanel(
+   #     plotOutput("Address_Count")
+   #   )
+   # ), 
+   # sidebarLayout(
+   #   sidebarPanel(
+   #     selectInput("yearChoice",
+   #                 "Year",
+   #                 choices = c(2015, 2016, 2017),
+   #                 selected = 2017)
+   #   ),
+   #   
+   #   # Show a plot of the generated distribution
+   #   mainPanel(
+   #     plotOutput("Gas_Price")
+   #   )
+   # ), 
+   # sidebarLayout(
+   #   sidebarPanel(
+   #     selectInput("yearChoice",
+   #                 "Year",
+   #                 choices = c(2015, 2016, 2017),
+   #                 selected = 2017)
+   #   ),
+   #   
+   #   # Show a plot of the generated distribution
+   #   mainPanel(
+   #     plotOutput("Gas_Price_2017")
+   #   )
+   # ), 
+   # sidebarLayout(
+   #   sidebarPanel(
+   #     selectInput("yearChoice",
+   #                 "Year",
+   #                 choices = c(2015, 2016, 2017),
+   #                 selected = 2017)
+   #   ),
+   #   
+   #   # Show a plot of the generated distribution
+   #   mainPanel(
+   #     plotOutput("Gas_Price_Limit")
+   #   )
+   # ), 
+   # sidebarLayout(
+   #   sidebarPanel(
+   #     selectInput("yearChoice",
+   #                 "Year",
+   #                 choices = c(2015, 2016, 2017),
+   #                 selected = 2017)
+   #   ),
+   #   
+   #   # Show a plot of the generated distribution
+   #   mainPanel(
+   #     plotOutput("Gas_Price_Limit_2017")
+   #   )
+   # ), 
+   # sidebarLayout(
+   #   sidebarPanel(
+   #     selectInput("yearChoice",
+   #                 "Year",
+   #                 choices = c(2015, 2016, 2017),
+   #                 selected = 2017)
+   #   ),
+   #   
+   #   # Show a plot of the generated distribution
+   #   mainPanel(
+   #     plotOutput("ETH")
+   #   )
+   # ), 
+   # sidebarLayout(
+   #   sidebarPanel(
+   #     selectInput("yearChoice",
+   #                 "Year",
+   #                 choices = c(2015, 2016, 2017),
+   #                 selected = 2017)
+   #   ),
+   #   
+   #   # Show a plot of the generated distribution
+   #   mainPanel(
+   #     plotOutput("ETH_2017")
+   #   )
+   # ), 
+   # sidebarLayout(
+   #   sidebarPanel(
+   #     selectInput("yearChoice",
+   #                 "Year",
+   #                 choices = c(2015, 2016, 2017),
+   #                 selected = 2017)
+   #   ),
+   #   
+   #   # Show a plot of the generated distribution
+   #   mainPanel(
+   #     plotOutput("Trans_Cost")
+   #   )
+   # ), 
+   # sidebarLayout(
+   #   sidebarPanel(
+   #     selectInput("yearChoice",
+   #                 "Year",
+   #                 choices = c(2015, 2016, 2017),
+   #                 selected = 2017)
+   #   ),
+   #   
+   #   # Show a plot of the generated distribution
+   #   mainPanel(
+   #     plotOutput("Trans_Cost_2017")
+   #   )
+   # )
 )
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
-   
-   output$tokenPrice <- renderPlot({
-     dat <- filter(merged_ethereum, year(merged_ethereum$Date) == input$yearChoice)
-     
-     ggplot(data = dat, aes(y = eth_etherprice, x = Date)) + 
-       geom_smooth(alpha = .5, color = "red" ) + geom_line(color = "blue") + 
-       labs(title = "Ether Price over Time", y ="Ether Price ($)", x = "Date")
-     
-
-      # # generate bins based on input$bins from ui.R
-      # x    <- faithful[, 2]
-      # bins <- seq(min(x), max(x), length.out = input$bins + 1)
-      # 
-      # # draw the histogram with the specified number of bins
-      # hist(x, breaks = bins, col = 'darkgray', border = 'white')
-   })
-   
-   #addition from .html
-   output$Hashrate <- renderPlot({
-     dat <- filter(merged_ethereum, year(merged_ethereum$Date) == input$yearChoice)
-     
-   ggplot(data = dat, aes(x = Date, y = eth_hashrate)) +
-     geom_area() +
-     labs(x = "Time", y = "Ethereum Hashrate (GH/s)", title = "Ethereum Network Activity")
-   })
-   
-   output$Difficulty <- renderPlot({
-     dat <- filter(merged_ethereum, year(merged_ethereum$Date) == input$yearChoice)
-     
-   ggplot(data = dat, aes(x = Date, y = eth_difficulty)) +
-     geom_area() +
-     labs(x = "Time", y = "Difficulty", title = "Ethereum Blockchain Difficulty over Time")
-   })
-   
-   output$Transaction_Count <- renderPlot({
-     dat <- filter(merged_ethereum, year(merged_ethereum$Date) == input$yearChoice)
-     
-   ggplot(data = merged_ethereum, aes(x = Date, y = eth_tx)) +
-     geom_area() + geom_smooth(weight = 1, color = "green") +
-     labs(x = "Time", y = "Transcation Count", title = "Daily Transcation Volume")
-   })
-   
-   output$Address_Count <- renderPlot({
-     dat <- filter(merged_ethereum, year(merged_ethereum$Date) == input$yearChoice)
-     
-   ggplot(data = dat, aes(x = Date, y = eth_address)) +
-     geom_area() +
-     geom_smooth(weight = 1, color = "green") +
-     labs(x = "Time", y = "Cummulative Address Count", title = "Address Growth over Time")
-   })
-   
-   output$Gas_Price <- renderPlot({
-     dat <- filter(merged_ethereum, year(merged_ethereum$Date) == input$yearChoice)
-     
-   ggplot(data = dat, aes(x = Date, y = eth_gasprice_per_tx)) +
-     geom_area(color = "green") +
-     labs(x = "Time", y = "Average Gas Price per Transaction", title = "Average Gas Price (ETH) for Smart Contract Operation per Transaction (Aug 2015 - Oct. 2017) ")
-   })
-     
-   output$Gas_Price_2017 <- renderPlot({
-     #
-   ggplot(data = filter(merged_ethereum, Date > "2016-12-31"), aes(x = Date, y = eth_gasprice_per_tx)) +
-     geom_area(color = "green") +
-     labs(x = "Time", y = "Average Gas Price per Transaction", title = "Average Gas Price (ETH) for Smart Contract Operation per Transaction (2017)")
-   })
-   
-   output$Gas_Price_Limit <- renderPlot({
-     dat <- filter(merged_ethereum, year(merged_ethereum$Date) == input$yearChoice)
-     
-   ggplot(data = dat, aes(x = Date, y = eth_gaslimit_per_tx)) +
-     geom_area(color = "green") +
-     labs(x = "Time", y = "Average Gas Price per Transaction", title = "Average Gas Limit (ETH) for Smart Contract Execution per Transaction")
-   })
-     
-   output$Gas_Price_Limit_2017 <- renderPlot({
-       #
-   ggplot(data = filter(merged_ethereum, Date > "2016-12-31"), aes(x = Date, y = eth_gaslimit_per_tx)) +
-     geom_area(color = "green") +
-     labs(x = "Time", y = "Average Gas Price per Transaction", title = "Average Gas Limit (ETH) for Smart Contract Execution per Transaction")
-   })
-   
-   output$ETH <- renderPlot({
-     dat <- filter(merged_ethereum, year(merged_ethereum$Date) == input$yearChoice)
-     
-   ggplot(data = dat, aes(x = Date, y = CostPerTransaction.ETH)) +
-     geom_area(color = "green") +
-     labs(x = "Time", y = "Average Gas Price per Transaction", title = "Average Transaction Fee (ETH) by Day")
-   })
-   
-   output$ETH_2017 <- renderPlot({
-     #
-   ggplot(data = filter(merged_ethereum, Date > "2016-12-31"), aes(x = Date, y = CostPerTransaction.ETH)) +
-     geom_area(color = "green") +
-     labs(x = "Time (2017)", y = "Average Transcation Fee (ETH)", title = "Average Transaction Fee vs. Time")
-   })
-   
-   output$Trans_Cost <- renderPlot({
-     dat <- filter(merged_ethereum, year(merged_ethereum$Date) == input$yearChoice)
-     
-   ggplot(data = dat, aes(x = Date, y = CostPerTransaction.USD)) +
-     geom_area(color = "green") +
-     labs(x = "Time", y = "Average Gas Price per Transaction", title = "Average Transaction Fee by Day")
-   })
-   
-   output$Trans_Cost_2017 <- renderPlot({
-     #
-   ggplot(data = filter(merged_ethereum, Date > "2016-12-31"), aes(x = Date, y = CostPerTransaction.USD)) +
-     geom_area(color = "green") +
-     labs(x = "Time (2017)", y = "Average Transaction Fee (USD)", title = "Average Transaction Fee vs. Time")
-   })
+     output$selectedPlot <- renderPlot({
+        plt <- NULL
+        if(input$currency == "ETH") {
+          dat <- filter(merged_ethereum, year(merged_ethereum$Date) == input$yearChoice)
+          ## futher subset for the quarter
+          if (input$fiscalQuarterChoice != "All") {
+            fQtr <- as.numeric(input$fiscalQuarterChoice)
+            dat <- filter(dat, dat$Quarter == fQtr)
+          }
+          ## determine plot
+          if (input$metric == "Token Price") {
+            return(ggplot(data = dat, aes(y = eth_etherprice, x = Date)) + 
+              geom_smooth(alpha = .5, color = "red" ) + geom_line(color = "blue") + 
+              labs(title = "Ether Price over Time", y ="Ether Price ($)", x = "Date"))
+          }
+          else if(input$metric == "Hash Rate") {
+            return(ggplot(data = dat, aes(x = Date, y = eth_hashrate)) +
+                  geom_area() +
+                  labs(x = "Time", y = "Ethereum Hashrate (GH/s)", title = "Ethereum Network Activity"))
+          }
+          else if(input$metric == "Difficulty") {
+            return(ggplot(data = dat, aes(x = Date, y = eth_difficulty)) +
+                     geom_area() +
+                     labs(x = "Time", y = "Difficulty", title = "Ethereum Blockchain Difficulty over Time"))
+          }
+          else {
+            # Transaction Count
+            return(ggplot(data = merged_ethereum, aes(x = Date, y = eth_tx)) +
+              geom_area() + geom_smooth(weight = 1, color = "green") +
+              labs(x = "Time", y = "Transcation Count", title = "Daily Transcation Volume"))
+          }
+        }
+       else {
+         
+       }
+     })
 }
 
 
