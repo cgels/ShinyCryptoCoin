@@ -73,7 +73,9 @@ server <- function(input, output) {
         }
         ## determine plot
         if (input$metric == "Token Price") {
-          return(ggplot(data = dat, aes(y = price, x = Date)) + 
+          return(
+            
+            ggplot(data = dat, aes(y = price, x = Date)) + 
             geom_smooth(alpha = .5, color = "red" ) + geom_line(color = "blue") + 
             labs(title = paste(short, "Price over Time"), y =paste(short, "Price ($)"), x = "Date"))
         }
@@ -97,19 +99,22 @@ server <- function(input, output) {
      )
 }
 
-pathPrefix <- "/Users/nicholasrusso/Desktop/grad/331/finalproject/data/"
+pathPrefix <- "/Users/cgels/calpoly/stat331/ShinyCryptoCoin/"
 bitcoin_price <- read.csv(paste(pathPrefix, "bitcoin_price.csv", sep = ""))
 bitcoin_data <- read.csv(paste(pathPrefix, "bitcoin_dataset.csv", sep = ""))
 bitcoin_price$Date <- mdy(as.character(bitcoin_price$Date ))
 bitcoin_data$Date <- ymd_hms(bitcoin_data$Date)
 
-merged_bitcoin <- merge(bitcoin_price, bitcoin_data, by="Date")
+merged_bitcoin <- bitcoin_data
+
+# merged_bitcoin <- read.csv(paste(pathPrefix, "merged_bitcoin.csv", sep = ""))
 merged_bitcoin$Quarter <- quarter(merged_bitcoin$Date)
 merged_bitcoin$Year <- year(merged_bitcoin$Date)
 merged_bitcoin$price <- merged_bitcoin$btc_market_price
-merged_bitcoin$hash_rate <- merged_bitcoin$btc_hash_rate 
+merged_bitcoin$hash_rate <- merged_bitcoin$btc_hash_rate
 merged_bitcoin$diff <- merged_bitcoin$btc_difficulty
 merged_bitcoin$trans <- merged_bitcoin$btc_n_transactions
+# merged_bitcoin <- read.csv(paste(pathPrefix, "merged_bitcoin.csv", sep = ""))
 
 
 ethereum_price <- read.csv(paste(pathPrefix, "ethereum_price.csv", sep = ""))
@@ -126,13 +131,13 @@ merged_ethereum$diff <- merged_ethereum$eth_difficulty
 merged_ethereum$trans <- merged_ethereum$eth_tx
 #conver gas prices to terms of Ether instead of Wei -- http://ethdocs.org/en/latest/ether.html#what-is-ether
 #create columns for cost per transaction isntead total per day.
-merged_ethereum$eth_gaslimit_per_tx <- (merged_ethereum$eth_gaslimit / 1000000000000000000) / merged_ethereum$eth_tx
-merged_ethereum$eth_gasprice_per_tx <- (merged_ethereum$eth_gasprice / 1000000000000000000 ) / merged_ethereum$eth_tx
-# compute CostPerTransaction in Ether and USD to match Bitcoin
-merged_ethereum$CostPerTransaction.ETH <- ((merged_ethereum$eth_gaslimit / merged_ethereum$eth_tx) * (merged_ethereum$eth_gasprice / merged_ethereum$eth_tx)) / 1000000000000000000
-merged_ethereum$CostPerTransaction.USD <- merged_ethereum$CostPerTransaction * merged_ethereum$eth_etherprice
+# merged_ethereum$eth_gaslimit_per_tx <- (merged_ethereum$eth_gaslimit / 1000000000000000000) / merged_ethereum$eth_tx
+# merged_ethereum$eth_gasprice_per_tx <- (merged_ethereum$eth_gasprice / 1000000000000000000 ) / merged_ethereum$eth_tx
+# # compute CostPerTransaction in Ether and USD to match Bitcoin
+# merged_ethereum$CostPerTransaction.ETH <- ((merged_ethereum$eth_gaslimit / merged_ethereum$eth_tx) * (merged_ethereum$eth_gasprice / merged_ethereum$eth_tx)) / 1000000000000000000
+# merged_ethereum$CostPerTransaction.USD <- merged_ethereum$CostPerTransaction * merged_ethereum$eth_etherprice
 
-names(merged_ethereum)
+# names(merged_ethereum)
 
 
 # Run the application 
