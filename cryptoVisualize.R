@@ -15,9 +15,7 @@ library(ggplot2)
 library(zoo)
 library(magrittr)
 
-# ethereumPlots = c("Token Price", "Hashrate", "Difficulty", "Transation_Count", "Address_Count", "Gas_Price", "Gas_Price_Limit", "ETH", "Trans_Cost" )
-
-ethereumPlots <- c("Token Price", "Hash Rate", "Difficulty", "Transaction Count")
+ethereumPlots <- c("Token Price", "Hash Rate", "Difficulty", "Transaction Count", "N")
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -50,7 +48,8 @@ ui <- fluidPage(
       # Show a plot of the generated distribution
       mainPanel(
          plotOutput("selectedPlot"),
-         plotOutput("forecast")
+         plotOutput("forecast"),
+         verbatimTextOutput("metricSum")
       )
    )
 )
@@ -158,47 +157,88 @@ server <- function(input, output) {
        }
      })
      
+     
+     
+     output$metricSum <- renderPrint({
+       if(input$currency == "ETH") {
+         dat <- filter(merged_ethereum, year(merged_ethereum$Date) == input$yearChoice)
+         short <- "Ether"
+         full <- "Ethereum"
+       } else {
+         dat <- filter(merged_bitcoin, year(merged_bitcoin$Date) == input$yearChoice)
+         short <- "Bitcoin"
+         full <- "Bitcoin"
+       }
+       ## futher subset for the quarter
+       if (input$fiscalQuarterChoice != "All") {
+         fQtr <- as.numeric(input$fiscalQuarterChoice)
+         dat <- filter(dat, dat$Quarter == fQtr)
+       }
+       
+       
+       if (input$fiscalQuarterChoice != "All") {
+         fQtr <- as.numeric(input$fiscalQuarterChoice)
+         dat <- filter(dat, dat$Quarter == fQtr)
+       }
+       # return(summary(dat))
+       if (input$metric == "Token Price") {
+         toFit <- ts(dat$price, start = as.numeric(input$yearChoice), frequency = 365)
+         return(summary(toFit))
+       }
+       else if(input$metric == "Hash Rate") {
+         toFit <- ts(dat$hash_rate, start = as.numeric(input$yearChoice), frequency = 365)
+         return(summary(toFit))
+       }
+       else if(input$metric == "Difficulty") {
+         toFit <- ts(dat$diff, start = as.numeric(input$yearChoice), frequency = 365)
+         return(summary(toFit))
+
+       }
+       else {
+         toFit <- ts(dat$trans, start = as.numeric(input$yearChoice), frequency = 365)
+         return(summary(toFit))
+       }
+       
+     })
+     
 }
 
 pathPrefix <- "/Users/cgels/calpoly/stat331/ShinyCryptoCoin/"
 
-  bitcoin_price <- read.csv(paste(pathPrefix, "bitcoin_price.csv", sep = ""))
-  bitcoin_data <- read.csv(paste(pathPrefix, "bitcoin_dataset.csv", sep = ""))
-  bitcoin_price$Date <- mdy(as.character(bitcoin_price$Date ))
-  bitcoin_data$Date <- ymd_hms(bitcoin_data$Date)
-  
-  merged_bitcoin <- bitcoin_data
-  
-  # merged_bitcoin <- read.csv(paste(pathPrefix, "merged_bitcoin.csv", sep = ""))
-  merged_bitcoin$Quarter <- quarter(merged_bitcoin$Date)
-  merged_bitcoin$Year <- year(merged_bitcoin$Date)
-  merged_bitcoin$price <- merged_bitcoin$btc_market_price
-  merged_bitcoin$hash_rate <- merged_bitcoin$btc_hash_rate
-  merged_bitcoin$diff <- merged_bitcoin$btc_difficulty
-  merged_bitcoin$trans <- merged_bitcoin$btc_n_transactions
-  # merged_bitcoin <- read.csv(paste(pathPrefix, "merged_bitcoin.csv", sep = ""))
+bitcoin_price <- read.csv(paste(pathPrefix, "bitcoin_price.csv", sep = ""))
+bitcoin_data <- read.csv(paste(pathPrefix, "bitcoin_dataset.csv", sep = ""))
+bitcoin_price$Date <- mdy(as.character(bitcoin_price$Date ))
+bitcoin_data$Date <- ymd_hms(bitcoin_data$Date)
+
+merged_bitcoin <- bitcoin_data
+
+merged_bitcoin$Quarter <- quarter(merged_bitcoin$Date)
+merged_bitcoin$Year <- year(merged_bitcoin$Date)
+merged_bitcoin$price <- merged_bitcoin$btc_market_price
+merged_bitcoin$hash_rate <- merged_bitcoin$btc_hash_rate
+merged_bitcoin$diff <- merged_bitcoin$btc_difficulty
+merged_bitcoin$trans <- merged_bitcoin$btc_n_transactions
 
 
 
-  ethereum_price <- read.csv(paste(pathPrefix, "ethereum_price.csv", sep = ""))
-  ethereum_data <- read.csv(paste(pathPrefix, "ethereum_dataset.csv", sep = ""))
-  ethereum_data$Date <- mdy(ethereum_data$Date.UTC.)
-  ethereum_price$Date <- mdy(as.character(ethereum_price$Date ))
-  
-  merged_ethereum <- merge(ethereum_price, ethereum_data, by="Date")
-  merged_ethereum$Quarter <- quarter(merged_ethereum$Date)
-  merged_ethereum$Year <- year(merged_ethereum$Date)
-  merged_ethereum$price <- merged_ethereum$eth_etherprice
-  merged_ethereum$hash_rate <- merged_ethereum$eth_hashrate 
-  merged_ethereum$diff <- merged_ethereum$eth_difficulty
-  merged_ethereum$trans <- merged_ethereum$eth_tx
-  #conver gas prices to terms of Ether instead of Wei -- http://ethdocs.org/en/latest/ether.html#what-is-ether
-  #create columns for cost per transaction isntead total per day.
-  # merged_ethereum$eth_gaslimit_per_tx <- (merged_ethereum$eth_gaslimit / 1000000000000000000) / merged_ethereum$eth_tx
-  # merged_ethereum$eth_gasprice_per_tx <- (merged_ethereum$eth_gasprice / 1000000000000000000 ) / merged_ethereum$eth_tx
-  # # compute CostPerTransaction in Ether and USD to match Bitcoin
-  # merged_ethereum$CostPerTransaction.ETH <- ((merged_ethereum$eth_gaslimit / merged_ethereum$eth_tx) * (merged_ethereum$eth_gasprice / merged_ethereum$eth_tx)) / 1000000000000000000
-  # merged_ethereum$CostPerTransaction.USD <- merged_ethereum$CostPerTransaction * merged_ethereum$eth_etherprice
+
+ethereum_price <- read.csv(paste(pathPrefix, "ethereum_price.csv", sep = ""))
+ethereum_data <- read.csv(paste(pathPrefix, "ethereum_dataset.csv", sep = ""))
+ethereum_data$Date <- mdy(ethereum_data$Date.UTC.)
+ethereum_price$Date <- mdy(as.character(ethereum_price$Date ))
+
+merged_ethereum <- merge(ethereum_price, ethereum_data, by="Date")
+
+merged_ethereum$Volume <- as.numeric(merged_ethereum$Volume)
+merged_ethereum$Market.Cap <- as.numeric(merged_ethereum$Market.Cap)
+
+merged_ethereum$Quarter <- quarter(merged_ethereum$Date)
+merged_ethereum$Year <- year(merged_ethereum$Date)
+merged_ethereum$price <- merged_ethereum$eth_etherprice
+merged_ethereum$hash_rate <- merged_ethereum$eth_hashrate 
+merged_ethereum$diff <- merged_ethereum$eth_difficulty
+merged_ethereum$trans <- merged_ethereum$eth_tx
+
 
 
 # Run the application 
