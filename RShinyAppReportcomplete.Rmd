@@ -1,0 +1,28 @@
+---
+names: 'Charlie Gels, Nick Russo, Daniel DeFoe'
+title: "STAT 331 Final Project Report"
+date: '11/28/17'
+output: html_notebook
+---
+
+
+#Report
+###Overview
+Our shiny app investigates the values of two of the world's main universal cryptocurrencies Bitcoin and Ethereum. The analysis of these cryptocurrencies opperates similar to the analysis of a stock value. Data of these 2 currencies from 2015 to 2017 are mainly visualized by business quarters to observe and predict various metrics of the currencies. The data is split into quarters because the nature of the cryptocurrency market has the values of the currency fluxuating excessively within short periods of time. 
+
+###Packages
+Our app uses a collection of packages to do its analysis and provide its output. 'Shiny' is used to create the actual app, 'Lubridate'  and 'Zoo' are used to appropriately format the dates and time series data, 'Dplyer' is used to filter the data by whatever paremeters we want to view the data by, 'Forecast' is the main used for predicting a range of values for a prediction interval based on past observations, and  'Ggplot2' allows us to make the nice graphical output. The packages collectively allow for clean and straightforward output for the user. 
+
+###Format
+The format of the app has four drop down menus controlling the variables that the user may subset the data by. To the right of that is the graphical output of the subsetted data based off of the variable options the user has selected. The plot below that one is showing a prediction interval for the forecast length set by the user. Then below that will be the output of summary statistics from the subsetted data.
+
+###Using the Shiny App
+The app has easily changed parameters to determine what data the user wishes to view. There are tabs to adjust the year, quarter, currency, currency metric, and the forecast length. The year will always default to 2017 but can be changed by the selector on the left. From there, the user can also choose to subset by quarter, or view all quarters of the year at once in the plot. Bitcoin or Ethereum data can be observed, and for each of these, one of four potential variables can be looked at over the selected time period of subsetted data. These metrics include token price, hashrate, and transaction count, and difficulty. Finally, the user can adjust the period ahead in days that they wish to forecast the confidence interval to be 1, 3, 7, 14, or 30.
+
+###Statistics
+Using the data from 2015 to 2017, we have some limited prediction ability to create confidence intervals for various metrics of bitcoin and ethereum. We use the forecast package and the autoplot command to create the best model to predict values based on the data subsetted by the user. This means that we can predict based on yearly data or based on data from a specific quarter. The plot with the confidence intervals will show both an 80% and 95% confidence interval, then in the middle of the interval is a linear prediction for the forecast. More recent data from quarter 2 of 2017 shows the 30 day forecast of both cryptocurrencies, and they are both predicted to gain value. Also the confidence intervals for transaction counts for both currencies are suggesting that they will increase based on the same time period. 
+
+Aside from the confidence intervals, the statistics summaries show that the average token price of both currencies has been rising. Furthermore, the mean of each currency increased each business quarter in 2017. In 2017 the average token price for Bitcoin was 2,182 USD and the average token price for Ethereum was 152.80 USD.
+
+###Conclusion
+A simple glance at the data would correctly suggest that the market is quite volatile in the short term, but analyzing the data averaged over larger time periods shows that we do have some ability to predict upon the data. Overall, R's forecasting allows the user to see that these cryptocurrencies are both generally trending and gaining value despite how seemingly unpredictable the market is in the short term.
